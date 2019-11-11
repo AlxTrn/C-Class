@@ -5,6 +5,7 @@ int main () {
 
    for( ch = 75 ; ch <= 100; ch++ ) {
       printf("ASCII value = %d, Character = %c\n", ch , ch );
+      printf("------\n", );
    }
 
    return(0);
