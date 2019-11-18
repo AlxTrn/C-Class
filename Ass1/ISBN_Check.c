@@ -22,8 +22,7 @@ int main()
         //Declare variables
         char prefix[7] = "", reg_group[7] = "", registrant[7] = "", public[7] = "", check[7] = "", isbn[13] = "";
         int validation = 0, number, last_hyphen = 0, component_number = 0, i = 0, digits = 0, hyphens = 0, cout_hyphen = 0;
-        int precheck = 1, validcheck = 1, digitandhyphen = 1; //Act like bool objects
-
+        int digitandhyphen = 1; //Act like a bool
         // Get input
         char ISBN_num[20];
         printf("Enter ISBN number: ");
@@ -49,173 +48,151 @@ int main()
             if (isdigit(ISBN_num[i])) //Get nummber of hyphens
                 digits++;
         }
-        if (digitandhyphen == 1)
+        if (digitandhyphen == 0)
+            continue;
+
+        if (digits < 13)
         {
-            if (precheck == 1) //Check Valid Length 13 digits
+            printf("Invalid ISBN. Less than 13 digits.\n");
+            continue;
+        }
+        else if(digits > 13)
+        {
+            printf("Invalid ISBN. More than 13 digits.\n");
+            continue;
+        }
+
+        if (hyphens != 4 )
+        {
+            printf("Invalid ISBN. ISBN has 5 elements separated by hyphens.\n");
+            continue;
+        }
+
+        //printf("Pre-Check: Good\n");
+        //Break ISBN into components
+        for (int i = 0; i < strlen(ISBN_num); i++)
+        {
+            int INDEX = 0;
+            int ISBNINDEX = strlen(isbn);
+            char component[7] = "";
+
+            if (i == strlen(ISBN_num)-1)
             {
-                if (digits < 13)
+                component_number = 5;
+                for (int j = last_hyphen; j < strlen(ISBN_num); j++)
                 {
-                    printf("Invalid ISBN. Less than 13 digits.\n");
-                    precheck = 0;
-                }
-                else if(digits > 13)
-                {
-                    printf("Invalid ISBN. More than 13 digits.\n");
-                    precheck = 0;
+                    component[INDEX+(j-last_hyphen)] = ISBN_num[j];
+                    check[INDEX+(j-last_hyphen)] = ISBN_num[j];
                 }
             }
-            if (precheck == 1) //Check Valid Length 4 hyphens
+            else if (ISBN_num[i] == '-' && i != strlen(ISBN_num)-1)
             {
-                if (hyphens != 4 )
+                if (cout_hyphen == 0)
                 {
-                    printf("Invalid ISBN. ISBN has 5 elements separated by hyphens.\n");
-                    precheck = 0;
+                    component_number = 1;
+                    for (int j = 0; j < i; j++)
+                    {
+                        component[INDEX+j] = ISBN_num[j];
+                    }
+                    strcpy(prefix,component);
+                    strcat(isbn, component);
                 }
+                else
+                {
+                    component_number++;
+                    for (int j = last_hyphen; j < i; j++)
+                    {
+                        component[INDEX+(j-last_hyphen)] = ISBN_num[j];
+                    }
+                    if (component_number == 2)
+                    {
+                        strcpy(reg_group,component);
+                        strcat(isbn, component);
+                    }
+                    else if (component_number == 3)
+                    {
+                        strcpy(registrant,component);
+                        strcat(isbn, component);
+                    }
+                    else if (component_number == 4)
+                    {
+                        strcpy(public,component);
+                        strcat(isbn, component);
+                    }
+                }
+                cout_hyphen++;
+                last_hyphen = i + 1;
             }
-            // Done precheck
 
-            if (precheck == 1)
+        }
+        /*
+        printf("Prefix: %s\n", prefix);
+        printf("Reg_group: %s\n", reg_group);
+        printf("Registrant: %s\n", registrant);
+        printf("Public: %s\n", public);
+        printf("Check: %s\n", check);
+        printf("ISBN: %s\n", isbn);
+        */
+
+        //Check ISBN's validation
+        // Check Prefix's valid or not
+        if (atoi(prefix) != 978)
+        {
+            if (atoi(prefix) != 979)
             {
-                printf("Pre-Check: Good\n");
-
-                //Break ISBN into components
-                for (int i = 0; i < strlen(ISBN_num); i++)
-                {
-                    int INDEX = 0;
-                    int ISBNINDEX = strlen(isbn);
-                    char component[7] = "";
-
-                    if (i == strlen(ISBN_num)-1)
-                    {
-                        component_number = 5;
-                        for (int j = last_hyphen; j < strlen(ISBN_num); j++)
-                        {
-                            component[INDEX+(j-last_hyphen)] = ISBN_num[j];
-                            check[INDEX+(j-last_hyphen)] = ISBN_num[j];
-                        }
-                    }
-                    else if (ISBN_num[i] == '-' && i != strlen(ISBN_num)-1)
-                    {
-                        if (cout_hyphen == 0)
-                        {
-                            component_number = 1;
-                            for (int j = 0; j < i; j++)
-                            {
-                                component[INDEX+j] = ISBN_num[j];
-                            }
-                            strcpy(prefix,component);
-                            strcat(isbn, component);
-                        }
-                        else
-                        {
-                            component_number++;
-                            for (int j = last_hyphen; j < i; j++)
-                            {
-                                component[INDEX+(j-last_hyphen)] = ISBN_num[j];
-                            }
-                            if (component_number == 2)
-                            {
-                                strcpy(reg_group,component);
-                                strcat(isbn, component);
-                            }
-                            else if (component_number == 3)
-                            {
-                                strcpy(registrant,component);
-                                strcat(isbn, component);
-                            }
-                            else if (component_number == 4)
-                            {
-                                strcpy(public,component);
-                                strcat(isbn, component);
-                            }
-                        }
-                        cout_hyphen++;
-                        last_hyphen = i + 1;
-                    }
-
-                }
-                /*
-                printf("Prefix: %s\n", prefix);
-                printf("Reg_group: %s\n", reg_group);
-                printf("Registrant: %s\n", registrant);
-                printf("Public: %s\n", public);
-                printf("Check: %s\n", check);
-                printf("ISBN: %s\n", isbn);
-                */
-
-                //Check ISBN's validation
-                // if validcheck == 0 all the addition checks will not apply
-                if (validcheck == 1) // Check Prefix's valid or not
-                {
-                    if (atoi(prefix) != 978)
-                    {
-                        if (atoi(prefix) != 979)
-                        {
-                            printf("Invalid ISBN. Prefix element must be either 978 or 979.\n");
-                            validcheck = 0;
-                        }
-                    }
-                }
-
-                if (validcheck == 1) // Check Registration Group's valid or not
-                {
-                    if (strlen(reg_group) < 1 || strlen(reg_group) > 5)
-                    {
-                        printf("Invalid ISBN. Registration group element must have 1 to 5 digits.\n");
-                        validcheck = 0;
-                    }
-                }
-
-                if (validcheck == 1) // Check Registration's valid or not
-                {
-                    if (strlen(registrant) < 1 || strlen(registrant) > 7)
-                    {
-                        printf("Invalid ISBN. Registrant element must have 1 to 7 digits.\n");
-                        validcheck = 0;
-                    }
-                }
-
-                if (validcheck == 1) // Check Publication's valid or not
-                {
-                    if (strlen(public) < 1 || strlen(public) > 6)
-                    {
-                        printf("Invalid ISBN. Publication element must have 1 to 6 digits.\n");
-                        validcheck = 0;
-                    }
-                }
-
-                if (validcheck == 1) // Check Check's valid or not
-                {
-                    if (strlen(check) != 1)
-                    {
-                        printf("Invalid ISBN. Check digit must have exactly 1 digit.\n");
-                        validcheck = 0;
-                    }
-                    strcat(isbn, check);
-                }
-                //Make validation's number
-                for (int i = 0; i < strlen(isbn); i++)
-                {
-                    if ((i+1) % 2 == 0)
-                        validation += 3*(isbn[i] - '0');
-                    else
-                        validation += (isbn[i] - '0');
-                }
-                if (validcheck == 1) // Check Final Check's valid or not
-                {
-                    if (validation % 10 != 0)
-                    {
-                        printf("Invalid ISBN. Failed validation test.\n");
-                        validcheck = 0;
-                    }
-                }
-
-                if (validcheck == 1)
-                    printf("Valid ISBN.\n");
+                printf("Invalid ISBN. Prefix element must be either 978 or 979.\n");
+                continue;
             }
         }
-  }
-  return 0;
+
+        // Check Registration Group's valid or not
+        if (strlen(reg_group) < 1 || strlen(reg_group) > 5)
+        {
+            printf("Invalid ISBN. Registration group element must have 1 to 5 digits.\n");
+            continue;
+        }
+
+        // Check Registration's valid or not
+        if (strlen(registrant) < 1 || strlen(registrant) > 7)
+        {
+            printf("Invalid ISBN. Registrant element must have 1 to 7 digits.\n");
+            continue;
+        }
+
+        // Check Publication's valid or not
+        if (strlen(public) < 1 || strlen(public) > 6)
+        {
+            printf("Invalid ISBN. Publication element must have 1 to 6 digits.\n");
+            continue;
+        }
+
+        // Check Check's valid or not
+        if (strlen(check) != 1)
+        {
+            printf("Invalid ISBN. Check digit must have exactly 1 digit.\n");
+            continue;
+        }
+        strcat(isbn, check);
+
+        //Make validation's number
+        for (int i = 0; i < strlen(isbn); i++)
+        {
+            if ((i+1) % 2 == 0)
+                validation += 3*(isbn[i] - '0');
+            else
+                validation += (isbn[i] - '0');
+        }
+
+        if (validation % 10 != 0)
+        {
+            printf("Invalid ISBN. Failed validation test.\n");
+            continue;
+        }
+
+        printf("Valid ISBN.\n");
+    }
+
+    return 0;
 }
 
 /*
