@@ -68,7 +68,6 @@ int main()
             continue;
         }
 
-        //printf("Pre-Check: Good\n");
         //Break ISBN into components
         for (int i = 0; i < strlen(ISBN_num); i++)
         {
@@ -76,23 +75,23 @@ int main()
             int ISBNINDEX = strlen(isbn);
             char component[7] = "";
 
-            if (i == strlen(ISBN_num)-1)
+            if (i == strlen(ISBN_num) - 1)
             {
                 component_number = 5;
                 for (int j = last_hyphen; j < strlen(ISBN_num); j++)
                 {
-                    component[INDEX+(j-last_hyphen)] = ISBN_num[j];
-                    check[INDEX+(j-last_hyphen)] = ISBN_num[j];
+                    component[INDEX + (j - last_hyphen)] = ISBN_num[j];
+                    check[INDEX + (j - last_hyphen)] = ISBN_num[j];
                 }
             }
-            else if (ISBN_num[i] == '-' && i != strlen(ISBN_num)-1)
+            else if (ISBN_num[i] == '-' && i != strlen(ISBN_num) - 1)
             {
                 if (cout_hyphen == 0)
                 {
                     component_number = 1;
                     for (int j = 0; j < i; j++)
                     {
-                        component[INDEX+j] = ISBN_num[j];
+                        component[INDEX + j] = ISBN_num[j];
                     }
                     strcpy(prefix,component);
                     strcat(isbn, component);
@@ -102,21 +101,21 @@ int main()
                     component_number++;
                     for (int j = last_hyphen; j < i; j++)
                     {
-                        component[INDEX+(j-last_hyphen)] = ISBN_num[j];
+                        component[INDEX + (j - last_hyphen)] = ISBN_num[j];
                     }
                     if (component_number == 2)
                     {
-                        strcpy(reg_group,component);
+                        strcpy(reg_group, component);
                         strcat(isbn, component);
                     }
                     else if (component_number == 3)
                     {
-                        strcpy(registrant,component);
+                        strcpy(registrant, component);
                         strcat(isbn, component);
                     }
                     else if (component_number == 4)
                     {
-                        strcpy(public,component);
+                        strcpy(public, component);
                         strcat(isbn, component);
                     }
                 }
@@ -125,14 +124,6 @@ int main()
             }
 
         }
-        /*
-        printf("Prefix: %s\n", prefix);
-        printf("Reg_group: %s\n", reg_group);
-        printf("Registrant: %s\n", registrant);
-        printf("Public: %s\n", public);
-        printf("Check: %s\n", check);
-        printf("ISBN: %s\n", isbn);
-        */
 
         //Check ISBN's validation
         // Check Prefix's valid or not
@@ -177,8 +168,8 @@ int main()
         //Make validation's number
         for (int i = 0; i < strlen(isbn); i++)
         {
-            if ((i+1) % 2 == 0)
-                validation += 3*(isbn[i] - '0');
+            if ((i + 1) % 2 == 0)
+                validation += 3 * (isbn[i] - '0');
             else
                 validation += (isbn[i] - '0');
         }
@@ -194,8 +185,3 @@ int main()
 
     return 0;
 }
-
-/*
-//Aplly component names
-
-*/
